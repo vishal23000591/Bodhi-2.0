@@ -15,4 +15,12 @@ describe("LanguageToggle", () => {
     fireEvent.click(screen.getByText("தமிழ்"));
     expect(onChange).toHaveBeenCalledWith("ta");
   });
+
+  it("offers a Tanglish option alongside English and Tamil", () => {
+    const onChange = vi.fn();
+    render(<LanguageToggle language="tanglish" onChange={onChange} />);
+    expect(screen.getByText("Tanglish")).toHaveClass("active");
+    fireEvent.click(screen.getByText("EN"));
+    expect(onChange).toHaveBeenCalledWith("en");
+  });
 });

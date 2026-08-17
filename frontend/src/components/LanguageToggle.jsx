@@ -1,6 +1,7 @@
 const OPTIONS = [
   { code: "en", label: "EN" },
   { code: "ta", label: "தமிழ்" },
+  { code: "tanglish", label: "Tanglish" },
 ];
 
 export default function LanguageToggle({ language, onChange }) {
