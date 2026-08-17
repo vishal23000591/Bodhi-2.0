@@ -4,9 +4,26 @@ import { api } from "../api/client";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 import { groupByRecency } from "../utils/dateGroups";
+import { ChevronRightIcon, SearchIcon } from "./icons";
 
 function displayName(filename) {
   return (filename || "Untitled").replace(/\.pdf$/i, "");
+}
+
+// A simple, real (not decorative) growth indicator: the more topics a
+// student has actually chatted on, the further along the tree grows.
+const GROWTH_STAGES = [
+  { emoji: null, note: "Start a chat to plant your first seed!" },
+  { emoji: "🌱", note: "Nice start — keep learning to help it sprout!" },
+  { emoji: "🌿", note: "Your tree is growing — keep at it!" },
+  { emoji: "🌳", note: "Look at that — a full-grown learning tree!" },
+];
+
+function growthStageIndex(chatCount) {
+  if (chatCount === 0) return 0;
+  if (chatCount <= 2) return 1;
+  if (chatCount <= 5) return 2;
+  return 3;
 }
 
 export default function Sidebar() {
@@ -116,6 +133,8 @@ export default function Sidebar() {
     [visibleDocuments]
   );
 
+  const stageIndex = growthStageIndex(chats.length);
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -128,7 +147,7 @@ export default function Sidebar() {
       </button>
 
       <div className="sidebar-search">
-        🔍
+        <SearchIcon />
         <input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
@@ -204,6 +223,31 @@ export default function Sidebar() {
             })}
           </div>
         ))}
+      </div>
+
+      <div className="tree-card">
+        <div className="tree-title">
+          <span>Your Learning Tree</span>
+          <ChevronRightIcon />
+        </div>
+        <div className="growth">
+          <div className={`growth-stage ${stageIndex >= 0 ? "reached" : ""} ${stageIndex === 0 ? "current" : ""}`}>
+            <span className="growth-seed" />
+          </div>
+          <span className="growth-arrow">→</span>
+          <div className={`growth-stage ${stageIndex >= 1 ? "reached" : ""} ${stageIndex === 1 ? "current" : ""}`}>
+            🌱
+          </div>
+          <span className="growth-arrow">→</span>
+          <div className={`growth-stage ${stageIndex >= 2 ? "reached" : ""} ${stageIndex === 2 ? "current" : ""}`}>
+            🌿
+          </div>
+          <span className="growth-arrow">→</span>
+          <div className={`growth-stage ${stageIndex >= 3 ? "reached" : ""} ${stageIndex === 3 ? "current" : ""}`}>
+            🌳
+          </div>
+        </div>
+        <div className="tree-note">{GROWTH_STAGES[stageIndex].note}</div>
       </div>
 
       <div className="sidebar-profile">
