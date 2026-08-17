@@ -86,6 +86,54 @@ export default function Chat() {
     loadExplanation();
   }, [loadExplanation]);
 
+  // --- VOICE MODE STATES & LOGIC ---
+  const [isListening, setIsListening] = useState(false);
+  const [autoRead, setAutoRead] = useState(false);
+
+  const toggleListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser.");
+      return;
+    }
+
+    if (isListening) return; // Prevent multiple instances
+
+    const recognition = new SpeechRecognition();
+    
+    // Dynamically set regional language
+    if (language === 'ta') recognition.lang = 'ta-IN';
+    else if (language === 'tanglish') recognition.lang = 'en-IN';
+    else recognition.lang = 'en-IN';
+
+    recognition.interimResults = true;
+    recognition.continuous = false;
+
+    const initialInput = input; // Capture current input to append safely
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (event) => {
+      let currentTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        currentTranscript += event.results[i][0].transcript;
+      }
+      setInput(initialInput + (initialInput ? ' ' : '') + currentTranscript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
+  // ----------------------------------
+
   async function handleSend(e) {
     e.preventDefault();
     if (!input.trim() || !chat) return;
@@ -119,6 +167,17 @@ export default function Chat() {
         <h1>{topic.title}</h1>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {mastery && <MasteryBadge status={mastery.status} />}
+          
+          {/* New Auto-Read Toggle */}
+          <label style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "0.9rem", cursor: "pointer", userSelect: "none" }}>
+            <input 
+              type="checkbox" 
+              checked={autoRead} 
+              onChange={(e) => setAutoRead(e.target.checked)} 
+            />
+            Auto-Read 🔊
+          </label>
+
           <LanguageToggle language={language} onChange={setLanguage} />
           <button className={`btn ${view === "learn" ? "btn-primary" : "btn-secondary"}`} onClick={() => setView("learn")}>
             Learn
@@ -170,7 +229,12 @@ export default function Chat() {
               <div className="empty-state">Ask anything about {topic.title} — Bodhi will answer using your textbook.</div>
             )}
             {messages.map((m) => (
-              <ChatBubble key={m.id} message={m} />
+              <ChatBubble 
+                key={m.id} 
+                message={m} 
+                autoRead={autoRead} 
+                language={language} 
+              />
             ))}
             <div ref={scrollRef} />
           </div>
@@ -178,9 +242,29 @@ export default function Chat() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your doubt…"
+              placeholder="Type your doubt or use voice…"
               disabled={sending}
             />
+            
+            {/* New Microphone Button */}
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              onClick={toggleListening}
+              title="Voice Input"
+              style={{
+                padding: '0 14px',
+                color: isListening ? '#ef4444' : 'inherit',
+                backgroundColor: isListening ? '#fee2e2' : undefined,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s',
+              }}
+            >
+              {isListening ? '🎙️...' : '🎤'}
+            </button>
+
             <button className="btn btn-primary" type="submit" disabled={sending || !input.trim()}>
               {sending ? "…" : "Send"}
             </button>
