@@ -52,7 +52,9 @@ export const api = {
     form.append("file", file);
     return request("/documents/upload", { method: "POST", body: form, isForm: true });
   },
+  documents: () => request("/documents"),
   documentStatus: (documentId) => request(`/documents/${documentId}/status`),
+  deleteDocument: (documentId) => request(`/documents/${documentId}`, { method: "DELETE" }),
   topics: (documentId) => request(`/documents/${documentId}/topics`),
 
   openChat: (payload) => request("/chats", { method: "POST", body: payload }),

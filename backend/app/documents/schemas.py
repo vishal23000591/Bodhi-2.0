@@ -13,3 +13,4 @@ class DocumentOut(BaseModel):
     status: str
     page_count: int | None = None
     error: str | None = None
+    created_at: str | None = None

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { groupChatsByRecency, groupLabel } from "./dateGroups";
+import { groupByRecency, groupChatsByRecency, groupLabel } from "./dateGroups";
 
 // Constructed with the local-time Date constructor (not ISO/UTC strings) so
 // this test is not sensitive to the machine's timezone offset.
@@ -41,5 +41,17 @@ describe("groupChatsByRecency", () => {
 
   it("returns an empty list for no chats", () => {
     expect(groupChatsByRecency([], NOW)).toEqual([]);
+  });
+});
+
+describe("groupByRecency", () => {
+  it("groups arbitrary items using a custom date accessor", () => {
+    const documents = [
+      { id: "d1", filename: "Old Book.pdf", created_at: localDate(1) },
+      { id: "d2", filename: "New Book.pdf", created_at: localDate(18, 3) },
+    ];
+    const groups = groupByRecency(documents, (d) => d.created_at, NOW);
+    expect(groups.map(([label]) => label)).toEqual(["Today", "Older"]);
+    expect(groups[0][1][0].filename).toBe("New Book.pdf");
   });
 });

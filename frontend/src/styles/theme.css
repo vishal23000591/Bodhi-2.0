@@ -198,6 +198,84 @@ a {
   opacity: 1;
 }
 
+/* ---------- sidebar document -> topics tree ---------- */
+
+.sidebar-doc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+  transition: background 0.12s ease;
+}
+
+.sidebar-doc-item:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-doc-item.active {
+  background: var(--bg-surface);
+  border-left-color: var(--accent-terracotta);
+}
+
+.sidebar-doc-item:hover .sidebar-item-delete {
+  opacity: 1;
+}
+
+.sidebar-doc-chevron {
+  display: inline-block;
+  width: 10px;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-doc-chevron.open {
+  transform: rotate(90deg);
+}
+
+.sidebar-doc-status {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.sidebar-doc-status.failed {
+  color: var(--danger);
+}
+
+.sidebar-topic-list {
+  margin-left: 20px;
+  border-left: 1.5px solid var(--border-soft);
+  padding-left: 6px;
+  margin-bottom: 2px;
+}
+
+.sidebar-topic-item {
+  font-size: 0.85rem;
+}
+
+.sidebar-topic-item.not-chatted {
+  color: var(--text-secondary);
+}
+
+.sidebar-topic-item.chatted .sidebar-item-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.sidebar-topic-empty {
+  padding: 6px 10px 6px 16px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
 .sidebar-profile {
   display: flex;
   align-items: center;

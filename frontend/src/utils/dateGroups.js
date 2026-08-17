@@ -16,12 +16,18 @@ export function groupLabel(dateStr, now = new Date()) {
 
 export const GROUP_ORDER = ["Today", "Yesterday", "This week", "Older"];
 
-export function groupChatsByRecency(chats, now = new Date()) {
+/** Generic recency grouping — `getDate(item)` extracts the timestamp to
+ * bucket each item by. */
+export function groupByRecency(items, getDate, now = new Date()) {
   const map = {};
-  for (const chat of chats) {
-    const label = groupLabel(chat.last_message_at, now);
+  for (const item of items) {
+    const label = groupLabel(getDate(item), now);
     map[label] = map[label] || [];
-    map[label].push(chat);
+    map[label].push(item);
   }
   return GROUP_ORDER.filter((label) => map[label]?.length).map((label) => [label, map[label]]);
+}
+
+export function groupChatsByRecency(chats, now = new Date()) {
+  return groupByRecency(chats, (c) => c.last_message_at, now);
 }
