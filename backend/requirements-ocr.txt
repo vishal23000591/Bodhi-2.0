@@ -1,0 +1,7 @@
+# Optional, heavy. Only needed for scanned/image PDF extraction.
+# Install separately: pip install -r requirements-ocr.txt
+# If these fail to install on your Python version, Bodhi still runs —
+# copy-paste PDFs work fully; scanned PDFs will return a clear error
+# until this is installed.
+paddlepaddle
+paddleocr

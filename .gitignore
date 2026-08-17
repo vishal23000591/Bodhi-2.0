@@ -1,0 +1,27 @@
+# env / secrets
+.env
+backend/.env
+frontend/.env
+*.pem
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# data
+backend/chroma_data/
+backend/uploads/
+backend/mongo_data/
+backend/*.log
+
+# node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# os
+.DS_Store
