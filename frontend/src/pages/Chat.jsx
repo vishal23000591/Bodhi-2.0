@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../api/client";
 import ChatBubble from "../components/ChatBubble";
+import { DocumentIcon, MicIcon, PaperclipIcon, SendIcon, SpeakerIcon } from "../components/icons";
 import LanguageToggle from "../components/LanguageToggle";
 import LearnFlow from "../components/LearnFlow";
 import MasteryBadge from "../components/MasteryBadge";
@@ -169,13 +170,13 @@ export default function Chat() {
           {mastery && <MasteryBadge status={mastery.status} />}
           
           {/* New Auto-Read Toggle */}
-          <label style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "0.9rem", cursor: "pointer", userSelect: "none" }}>
-            <input 
-              type="checkbox" 
-              checked={autoRead} 
-              onChange={(e) => setAutoRead(e.target.checked)} 
+          <label className="auto-read-label">
+            <input
+              type="checkbox"
+              checked={autoRead}
+              onChange={(e) => setAutoRead(e.target.checked)}
             />
-            Auto-Read 🔊
+            Auto-Read <SpeakerIcon />
           </label>
 
           <LanguageToggle language={language} onChange={setLanguage} />
@@ -204,7 +205,7 @@ export default function Chat() {
           />
         </div>
         <div style={{ display: view === "ask" ? "block" : "none" }}>
-          <div className="chat-scroll">
+          <div className="center-col" style={{ maxWidth: 760 }}>
             {explanationLoading && !explanation && (
               <div className="upload-status" style={{ marginBottom: 4 }}>
                 <div className="spinner" /> Preparing a summary of this concept…
@@ -212,63 +213,71 @@ export default function Chat() {
             )}
             {explanation && (
               <div className="card concept-summary">
-                <h4>📖 Concept Summary — {topic.title}</h4>
+                <h4 className="icon-heading">
+                  <DocumentIcon /> Concept Summary — {topic.title}
+                </h4>
                 <p>{explanation.explanation}</p>
                 {explanation.sources?.length > 0 && (
                   <div className="source-chip-row">
                     {explanation.sources.map((s, i) => (
                       <span key={i} className="source-chip">
-                        📖 p.{s.page}
+                        <DocumentIcon /> p.{s.page}
                       </span>
                     ))}
                   </div>
                 )}
               </div>
             )}
-            {messages.length === 0 && (
-              <div className="empty-state">Ask anything about {topic.title} — Bodhi will answer using your textbook.</div>
-            )}
-            {messages.map((m) => (
-              <ChatBubble 
-                key={m.id} 
-                message={m} 
-                autoRead={autoRead} 
-                language={language} 
-              />
-            ))}
-            <div ref={scrollRef} />
           </div>
-          <form className="chat-composer" onSubmit={handleSend}>
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your doubt or use voice…"
-              disabled={sending}
-            />
-            
-            {/* New Microphone Button */}
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
-              onClick={toggleListening}
-              title="Voice Input"
-              style={{
-                padding: '0 14px',
-                color: isListening ? '#ef4444' : 'inherit',
-                backgroundColor: isListening ? '#fee2e2' : undefined,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s',
-              }}
-            >
-              {isListening ? '🎙️...' : '🎤'}
-            </button>
 
-            <button className="btn btn-primary" type="submit" disabled={sending || !input.trim()}>
-              {sending ? "…" : "Send"}
-            </button>
-          </form>
+          <div className="chat-panel">
+            <div className="chat-panel-messages">
+              {messages.length === 0 && (
+                <div className="empty-state">Ask anything about {topic.title} — Bodhi will answer using your textbook.</div>
+              )}
+              {messages.map((m) => (
+                <ChatBubble
+                  key={m.id}
+                  message={m}
+                  autoRead={autoRead}
+                  language={language}
+                />
+              ))}
+              <div ref={scrollRef} />
+            </div>
+            <form className="chat-composer" onSubmit={handleSend}>
+              <button type="button" className="attach-btn" title="Attachments coming soon" disabled>
+                <PaperclipIcon />
+              </button>
+
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={`Ask anything about ${topic.title}…`}
+                disabled={sending}
+              />
+
+              {/* New Microphone Button */}
+              <button
+                type="button"
+                className={`mic-btn ${isListening ? "listening" : ""}`}
+                onClick={toggleListening}
+                title="Voice Input"
+              >
+                <MicIcon />
+              </button>
+
+              <button
+                className="composer-send"
+                type="submit"
+                disabled={sending || !input.trim()}
+                title="Send"
+                aria-label="Send"
+              >
+                {sending ? "…" : <SendIcon />}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </>

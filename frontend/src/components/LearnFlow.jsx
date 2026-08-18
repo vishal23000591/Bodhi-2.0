@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../api/client";
+import { AlertCircleIcon, CheckIcon, DocumentIcon, LightbulbIcon, PartialIcon } from "./icons";
 
 const STAGE = {
   TEACHING: "teaching",
@@ -154,7 +155,7 @@ export default function LearnFlow({
             <div className="source-chip-row">
               {explanation.sources.map((s, i) => (
                 <span key={i} className="source-chip">
-                  📖 p.{s.page}
+                  <DocumentIcon /> p.{s.page}
                 </span>
               ))}
             </div>
@@ -173,7 +174,9 @@ export default function LearnFlow({
     return (
       <div className="center-col">
         <div className="card">
-          <h2 style={{ marginTop: 0 }}>🧠 Your Turn</h2>
+          <h2 className="icon-heading lg" style={{ marginTop: 0 }}>
+            <LightbulbIcon /> Your Turn
+          </h2>
           <p>{tbQuestion}</p>
           <p className="text-muted" style={{ fontSize: "0.82rem" }}>
             Don't worry about using textbook language.
@@ -206,7 +209,9 @@ export default function LearnFlow({
           <div className="score-ring">{diagnosis.score}%</div>
           {diagnosis.understood?.length > 0 && (
             <div className="diagnosis-section understood">
-              <h4>✓ You understood</h4>
+              <h4 className="icon-heading">
+                <CheckIcon /> You understood
+              </h4>
               <ul>
                 {diagnosis.understood.map((u, i) => (
                   <li key={i}>{u}</li>
@@ -215,8 +220,10 @@ export default function LearnFlow({
             </div>
           )}
           {diagnosis.partial?.length > 0 && (
-            <div className="diagnosis-section">
-              <h4>△ Partial</h4>
+            <div className="diagnosis-section partial">
+              <h4 className="icon-heading">
+                <PartialIcon /> Partial
+              </h4>
               <ul>
                 {diagnosis.partial.map((p, i) => (
                   <li key={i}>{p}</li>
@@ -226,7 +233,9 @@ export default function LearnFlow({
           )}
           {diagnosis.misconceptions?.length > 0 && (
             <div className="diagnosis-section misconception">
-              <h4>⚠ Misconception</h4>
+              <h4 className="icon-heading">
+                <AlertCircleIcon /> Misconception
+              </h4>
               {diagnosis.misconceptions.map((m, i) => (
                 <div className="misconception-box" key={i}>
                   You said {m.claim}. According to your textbook: {m.correction}

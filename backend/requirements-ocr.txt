@@ -1,7 +1,8 @@
-# Optional, heavy. Only needed for scanned/image PDF extraction.
+# Optional, heavy. Needed for scanned PDFs and photo-of-a-page uploads.
 # Install separately: pip install -r requirements-ocr.txt
-# If these fail to install on your Python version, Bodhi still runs —
-# copy-paste PDFs work fully; scanned PDFs will return a clear error
-# until this is installed.
+# Requires Python 3.12 or older — paddlepaddle only ships wheels up to
+# cp312 as of this writing. Without it, Bodhi still runs: copy-paste PDFs
+# work fully; scanned/photo uploads will return a clear error until this
+# is installed.
 paddlepaddle
 paddleocr

@@ -58,3 +58,25 @@ def get_page_count(pdf_path: str) -> int:
         return doc.page_count
     finally:
         doc.close()
+
+
+def images_to_pdf(image_bytes_list: list[bytes]) -> bytes:
+    """Combines one or more page photos (JPG/PNG/WEBP/...) into a single
+    multi-page PDF, in the given order. The result has no text layer, so
+    extract_text's existing copy-paste check naturally routes it through
+    the PaddleOCR fallback — no separate image-extraction path needed."""
+    merged = fitz.open()
+    try:
+        for image_bytes in image_bytes_list:
+            img_doc = fitz.open(stream=image_bytes, filetype="image")
+            try:
+                single_page_pdf = fitz.open("pdf", img_doc.convert_to_pdf())
+                try:
+                    merged.insert_pdf(single_page_pdf)
+                finally:
+                    single_page_pdf.close()
+            finally:
+                img_doc.close()
+        return merged.tobytes()
+    finally:
+        merged.close()

@@ -1,6 +1,10 @@
 """PaddleOCR wrapper. Imported lazily so the app runs without the (heavy,
 optional) paddleocr/paddlepaddle dependencies installed — only the OCR
-fallback path for scanned PDFs needs them.
+fallback path for scanned PDFs and photographed pages needs them.
+
+Uses the PaddleOCR 3.x pipeline API (predict() returning OCRResult objects
+with rec_texts/rec_scores) — the older 2.x ocr()/show_log/use_angle_cls
+constructor args were removed upstream.
 """
 from functools import lru_cache
 
@@ -18,12 +22,18 @@ def _get_engine():
             "This PDF has no selectable text and needs OCR, but paddleocr is not "
             "installed. Run: pip install -r requirements-ocr.txt"
         ) from exc
-    return PaddleOCR(use_angle_cls=True, lang="en", show_log=False)
+    return PaddleOCR(
+        lang="en",
+        use_textline_orientation=True,
+        use_doc_orientation_classify=False,
+        use_doc_unwarping=False,
+    )
 
 
 def ocr_image(image_path: str) -> str:
     engine = _get_engine()
-    result = engine.ocr(image_path, cls=True)
-    if not result or not result[0]:
+    results = engine.predict(image_path)
+    if not results:
         return ""
-    return " ".join(line[1][0] for line in result[0])
+    texts = results[0].get("rec_texts") or []
+    return " ".join(texts)

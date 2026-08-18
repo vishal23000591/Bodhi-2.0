@@ -10,6 +10,7 @@ import {
   ProgressIcon,
   SeedIcon,
 } from "../components/icons";
+import { validateUploadFiles } from "../utils/fileValidation";
 
 async function pollUntilReady(documentId) {
   for (let i = 0; i < 120; i++) {
@@ -77,17 +78,17 @@ export default function Home() {
     refreshDocuments();
   }, [refreshDocuments]);
 
-  const handleFile = useCallback(
-    async (file) => {
-      if (!file) return;
-      if (!file.name.toLowerCase().endsWith(".pdf")) {
-        setError("Please upload a PDF file.");
+  const handleFiles = useCallback(
+    async (fileList) => {
+      const validation = validateUploadFiles(fileList);
+      if (!validation.ok) {
+        setError(validation.error);
         return;
       }
       setError("");
       setStatus("uploading");
       try {
-        const { document_id: documentId } = await api.uploadDocument(file);
+        const { document_id: documentId } = await api.uploadDocument(validation.files);
         setStatus("processing");
         refreshDocuments();
         await pollUntilReady(documentId);
@@ -103,7 +104,7 @@ export default function Home() {
   function onDrop(e) {
     e.preventDefault();
     setDragging(false);
-    handleFile(e.dataTransfer.files?.[0]);
+    handleFiles(e.dataTransfer.files);
   }
 
   function handleExploreCard() {
@@ -149,7 +150,7 @@ export default function Home() {
               <div>
                 <BookIcon className="upload-icon-svg" />
                 <h2>Drag &amp; drop your textbook here</h2>
-                <p>or click to browse — PDF only</p>
+                <p>a PDF, or photos of pages — JPG/PNG/WEBP, one or more</p>
                 <button
                   type="button"
                   className="browse-btn"
@@ -164,9 +165,10 @@ export default function Home() {
               <input
                 ref={inputRef}
                 type="file"
-                accept="application/pdf"
+                accept="application/pdf,image/*"
+                multiple
                 style={{ display: "none" }}
-                onChange={(e) => handleFile(e.target.files?.[0])}
+                onChange={(e) => handleFiles(e.target.files)}
               />
             </div>
 

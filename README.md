@@ -9,13 +9,14 @@ Full design doc: [`BODHI_Technical_Architecture.md`](BODHI_Technical_Architectur
 ## Stack
 
 - **Backend**: FastAPI (Python), MongoDB (auth/app data), ChromaDB (local, persistent — RAG vectors)
-- **Extraction**: PyMuPDF (copy-paste PDFs) with a PaddleOCR fallback (scanned PDFs)
+- **Upload**: a single PDF, or one-or-more photos of pages (JPG/PNG/WEBP) — photos are merged into a synthetic multi-page PDF server-side, so the rest of the pipeline treats them identically to a scanned PDF
+- **Extraction**: PyMuPDF (copy-paste PDFs) with a PaddleOCR fallback (scanned PDFs and photographed pages)
 - **LLM + embeddings**: OpenRouter (`nvidia/nemotron-3-ultra-550b-a55b:free` for chat, `nvidia/nemotron-3-embed-1b:free` for embeddings)
 - **Frontend**: React + Vite, peach/warm design system from the Bodhi logo
 
 ## Prerequisites
 
-- Python 3.11+ (tested on 3.14)
+- **Python 3.12** — required, not just recommended: PaddlePaddle (which PaddleOCR depends on) only ships wheels up to cp312 as of this writing, so scanned-PDF and photo uploads won't work on newer Python versions. `brew install python@3.12` if you don't have it, then `python3.12 -m venv .venv`.
 - Node 18+
 - MongoDB running locally (`brew install mongodb-community` or Docker)
 - An OpenRouter API key
@@ -24,15 +25,16 @@ Full design doc: [`BODHI_Technical_Architecture.md`](BODHI_Technical_Architectur
 
 ```bash
 cd backend
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt   # includes requirements.txt + test tools
 
 cp .env.example .env    # fill in OPENROUTER_API_KEY and JWT_SECRET
 ```
 
-Optional — only needed for scanned/image PDFs (heavy, may not have wheels
-on very new Python versions yet):
+Only needed for scanned PDFs or photo uploads (skip it if every upload will
+be a copy-paste PDF) — heavy (~1GB incl. PaddlePaddle), and requires
+Python 3.12 (see Prerequisites):
 
 ```bash
 pip install -r requirements-ocr.txt

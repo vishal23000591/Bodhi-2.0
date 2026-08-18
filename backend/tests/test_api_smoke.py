@@ -76,7 +76,9 @@ def test_full_p0_flow(app_client, monkeypatch, sample_pdf_path):
     #    within TestClient's request/response cycle
     with open(sample_pdf_path, "rb") as f:
         resp = app_client.post(
-            "/documents/upload", files={"file": ("sample.pdf", f, "application/pdf")}, headers=headers
+            "/documents/upload",
+            files=[("files", ("sample.pdf", f, "application/pdf"))],
+            headers=headers,
         )
     assert resp.status_code == 202
     document_id = resp.json()["document_id"]

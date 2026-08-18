@@ -47,9 +47,9 @@ export const api = {
   login: (payload) => request("/auth/login", { method: "POST", body: payload }),
   me: () => request("/auth/me"),
 
-  uploadDocument: (file) => {
+  uploadDocument: (files) => {
     const form = new FormData();
-    form.append("file", file);
+    for (const file of files) form.append("files", file);
     return request("/documents/upload", { method: "POST", body: form, isForm: true });
   },
   documents: () => request("/documents"),

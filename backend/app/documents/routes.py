@@ -2,16 +2,19 @@ import os
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
 from pymongo.database import Database
 
 from app.auth.dependencies import get_current_user
 from app.config import get_settings
+from app.documents.document_service import images_to_pdf
 from app.documents.pipeline import delete_document, run_pipeline
 from app.documents.schemas import DocumentOut, UploadResponse
 from app.services.mongo_client import get_db
 
 router = APIRouter(prefix="/documents", tags=["documents"])
+
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff", ".tif", ".heic")
 
 
 def _to_out(doc: dict) -> DocumentOut:
@@ -26,29 +29,57 @@ def _to_out(doc: dict) -> DocumentOut:
     )
 
 
+def _is_pdf(file: UploadFile) -> bool:
+    return file.content_type == "application/pdf" or (file.filename or "").lower().endswith(".pdf")
+
+
+def _is_image(file: UploadFile) -> bool:
+    if (file.content_type or "").startswith("image/"):
+        return True
+    return (file.filename or "").lower().endswith(IMAGE_EXTENSIONS)
+
+
 @router.post("/upload", response_model=UploadResponse, status_code=status.HTTP_202_ACCEPTED)
 async def upload_document(
     background_tasks: BackgroundTasks,
-    file: UploadFile,
+    files: list[UploadFile] = File(...),
     current_user: dict = Depends(get_current_user),
     db: Database = Depends(get_db),
 ):
-    if file.content_type != "application/pdf" and not (file.filename or "").lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+    if not files:
+        raise HTTPException(status_code=400, detail="No file was uploaded")
+
+    if len(files) == 1 and _is_pdf(files[0]):
+        pdf_bytes = await files[0].read()
+        display_name = files[0].filename
+    elif all(_is_image(f) for f in files):
+        image_bytes_list = [await f.read() for f in files]
+        try:
+            pdf_bytes = images_to_pdf(image_bytes_list)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=400,
+                detail="Could not read one of the uploaded photos. Make sure they're valid JPG/PNG/WEBP images.",
+            ) from exc
+        display_name = files[0].filename if len(files) == 1 else f"{len(files)} photos"
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Upload either a single PDF, or one or more photos of pages (JPG/PNG/WEBP).",
+        )
 
     settings = get_settings()
     os.makedirs(settings.upload_dir, exist_ok=True)
 
     document_id = str(uuid.uuid4())
     pdf_path = os.path.join(settings.upload_dir, f"{document_id}.pdf")
-    content = await file.read()
     with open(pdf_path, "wb") as f:
-        f.write(content)
+        f.write(pdf_bytes)
 
     document = {
         "_id": document_id,
         "user_id": current_user["_id"],
-        "filename": file.filename,
+        "filename": display_name,
         "extraction_mode": None,
         "status": "processing",
         "page_count": None,

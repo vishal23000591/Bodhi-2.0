@@ -4,7 +4,16 @@ import { api } from "../api/client";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 import { groupByRecency } from "../utils/dateGroups";
-import { ChevronRightIcon, SearchIcon } from "./icons";
+import {
+  ChatIcon,
+  ChevronRightIcon,
+  DocumentIcon,
+  PlantIcon,
+  SearchIcon,
+  SproutIcon,
+  TreeIcon,
+  XIcon,
+} from "./icons";
 
 function displayName(filename) {
   return (filename || "Untitled").replace(/\.pdf$/i, "");
@@ -13,10 +22,10 @@ function displayName(filename) {
 // A simple, real (not decorative) growth indicator: the more topics a
 // student has actually chatted on, the further along the tree grows.
 const GROWTH_STAGES = [
-  { emoji: null, note: "Start a chat to plant your first seed!" },
-  { emoji: "🌱", note: "Nice start — keep learning to help it sprout!" },
-  { emoji: "🌿", note: "Your tree is growing — keep at it!" },
-  { emoji: "🌳", note: "Look at that — a full-grown learning tree!" },
+  { note: "Start a chat to plant your first seed!" },
+  { note: "Nice start — keep learning to help it sprout!" },
+  { note: "Your tree is growing — keep at it!" },
+  { note: "Look at that — a full-grown learning tree!" },
 ];
 
 function growthStageIndex(chatCount) {
@@ -170,7 +179,7 @@ export default function Sidebar() {
                     onClick={() => toggleExpand(doc.id)}
                   >
                     <span className={`sidebar-doc-chevron ${isOpen ? "open" : ""}`}>▸</span>
-                    <span>📚</span>
+                    <DocumentIcon className="sidebar-doc-icon" />
                     <Link
                       to={`/documents/${doc.id}/topics`}
                       className="sidebar-item-title"
@@ -184,7 +193,7 @@ export default function Sidebar() {
                       className="sidebar-item-delete"
                       onClick={(e) => handleDeleteDocument(e, doc.id)}
                     >
-                      ✕
+                      <XIcon />
                     </button>
                   </div>
                   {isOpen && (
@@ -203,14 +212,18 @@ export default function Sidebar() {
                               topicId === topic.id ? "active" : ""
                             }`}
                           >
-                            <span>{chatted ? "💬" : "📄"}</span>
+                            {chatted ? (
+                              <ChatIcon className="sidebar-topic-icon" />
+                            ) : (
+                              <DocumentIcon className="sidebar-topic-icon" />
+                            )}
                             <span className="sidebar-item-title">{topic.title}</span>
                             {chatted && (
                               <button
                                 className="sidebar-item-delete"
                                 onClick={(e) => handleDeleteTopicChat(e, chat.id)}
                               >
-                                ✕
+                                <XIcon />
                               </button>
                             )}
                           </Link>
@@ -235,16 +248,28 @@ export default function Sidebar() {
             <span className="growth-seed" />
           </div>
           <span className="growth-arrow">→</span>
-          <div className={`growth-stage ${stageIndex >= 1 ? "reached" : ""} ${stageIndex === 1 ? "current" : ""}`}>
-            🌱
+          <div
+            className={`growth-stage growth-stage-sprout ${stageIndex >= 1 ? "reached" : ""} ${
+              stageIndex === 1 ? "current" : ""
+            }`}
+          >
+            <SproutIcon />
           </div>
           <span className="growth-arrow">→</span>
-          <div className={`growth-stage ${stageIndex >= 2 ? "reached" : ""} ${stageIndex === 2 ? "current" : ""}`}>
-            🌿
+          <div
+            className={`growth-stage growth-stage-plant ${stageIndex >= 2 ? "reached" : ""} ${
+              stageIndex === 2 ? "current" : ""
+            }`}
+          >
+            <PlantIcon />
           </div>
           <span className="growth-arrow">→</span>
-          <div className={`growth-stage ${stageIndex >= 3 ? "reached" : ""} ${stageIndex === 3 ? "current" : ""}`}>
-            🌳
+          <div
+            className={`growth-stage growth-stage-tree ${stageIndex >= 3 ? "reached" : ""} ${
+              stageIndex === 3 ? "current" : ""
+            }`}
+          >
+            <TreeIcon />
           </div>
         </div>
         <div className="tree-note">{GROWTH_STAGES[stageIndex].note}</div>

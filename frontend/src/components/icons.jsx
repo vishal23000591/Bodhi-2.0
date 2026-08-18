@@ -81,3 +81,139 @@ export function ProgressIcon(props) {
     </svg>
   );
 }
+
+export function DocumentIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v17H7.5A2.5 2.5 0 0 0 5 21.5z" />
+      <path d="M5 4.5v17M8 6h8M8 10h8" />
+    </svg>
+  );
+}
+
+export function ChatIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
+export function XIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  );
+}
+
+export function CheckIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" {...props}>
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+export function AlertCircleIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 8v4M12 16h.01" />
+    </svg>
+  );
+}
+
+export function PartialIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 12h8" />
+    </svg>
+  );
+}
+
+export function LightbulbIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+      <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z" />
+    </svg>
+  );
+}
+
+export function LeafIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M12 21c-4.5 0-8-3.5-8-8 0-6 5-9 12-9 0 8-1 17-4 17Z" />
+      <path d="M6 21c2-4 4-8 10-14" />
+    </svg>
+  );
+}
+
+export function SproutIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M12 21v-6" />
+      <path d="M12 15c0-3 2.5-5 6-5 0 3-2.5 5-6 5Z" />
+    </svg>
+  );
+}
+
+export function PlantIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M12 21V8" />
+      <path d="M12 12c0-3 2.5-5 6-5 0 3-2.5 5-6 5Z" />
+      <path d="M12 12c0-3-2.5-5-6-5 0 3 2.5 5 6 5Z" />
+    </svg>
+  );
+}
+
+export function TreeIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <circle cx="12" cy="9" r="6" />
+      <path d="M12 15v6" />
+    </svg>
+  );
+}
+
+export function SpeakerIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+      <path d="M16 8a5 5 0 0 1 0 8" />
+      <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+    </svg>
+  );
+}
+
+export function MicIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <rect x="9" y="2" width="6" height="11" rx="3" />
+      <path d="M5 10a7 7 0 0 0 14 0" />
+      <path d="M12 17v4" />
+      <path d="M8 21h8" />
+    </svg>
+  );
+}
+
+export function SendIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M22 2 11 13" />
+      <path d="M22 2 15 22l-4-9-9-4Z" />
+    </svg>
+  );
+}
+
+export function PaperclipIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <path d="M21.44 11.05 12.25 20.24a5.5 5.5 0 0 1-7.78-7.78l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-9.2 9.19a1.5 1.5 0 0 1-2.12-2.12l8.49-8.48" />
+    </svg>
+  );
+}
